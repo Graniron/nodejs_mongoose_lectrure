@@ -10,7 +10,12 @@ var institutionSchema = new Schema({
     },    
     type: { type: String, enum: ['restaurant', 'coffee-bar','lounge', 'hookah'] },
     admin: { type: Schema.Types.ObjectId, ref: 'Admin' },
-    capacity: { type: Number }
+    capacity: { type: Number },
+    working_hours: [{
+    				day: {type: String },
+    				open_time: {type: String},
+    				close_time: {type: String}
+    				}]
 })
 
 var Institution = mongoose.model('Institution', institutionSchema);

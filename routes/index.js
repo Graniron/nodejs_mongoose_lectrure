@@ -89,7 +89,12 @@ router.post('/createall', function(req, res, next) {
                 city: 'Lviv'
             },
             type: 'hookah',
-            admin: adminResult._id
+            admin: adminResult._id,
+            working_hours: {
+                day: 'Monday',
+                open_time: '10:00',
+                close_time: '22:00'
+            }
         }
         var venue = new Institution(obj);
         venue.save(function(err, venueResult) {
@@ -114,6 +119,42 @@ router.post('/createall', function(req, res, next) {
         })
     })
 })
+
+// SubTask #5: API which will add working_hours to institution and save it in DB
+router.post('/institution/:id/working_hours', function(req, res, next) {
+    Institution.findOne({_id: req.params.id}).exec(function(err, Inst) {
+        Inst.working_hours.push({
+            day: 'Sunday',
+            open_time: '11:00',
+            close_time: '19:10'
+        })
+            Inst.save(function(err) {
+                res.send("Success")
+            })
+        })
+});
+
+// SubTask #7: API which will add start_time to event 
+router.post('/event/:id/start_time', function(req, res, next) {
+    Event.findOne({_id: req.params.id}).exec(function(err, ev) {
+        if (err) throw err;
+
+        ev.start_time = new Date('Jun 11, 2017 14:00');
+        ev.start_time.setHours(ev.start_time.getHours() + 3);
+        ev.save(function(err) {
+           if (err) throw err;
+           console.log('Saved start time for event');
+        })
+        res.send(ev);
+    })
+});
+
+// SubTask #8: Get all events
+router.get('/events', function(req, res, next) {
+    Event.find({}, {name: 1, start_time: 1, _id: 0}).exec(function(err, ev) {
+        res.send(ev);
+    })
+});
 
 router.get('/', function(req, res, next) {
     res.render('index', { title: 'Express' });
